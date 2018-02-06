@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace CompleteProject
 {
@@ -34,11 +35,12 @@ namespace CompleteProject
 
         void Update ()
         {
-            // If the enemy should be sinking...
-            if(isSinking)
+			// If the enemy should be sinking...
+			print("haha yes");
+			if (isSinking)
             {
                 // ... move the enemy down by the sinkSpeed per second.
-                transform.Translate (-Vector3.up * sinkSpeed * Time.deltaTime);
+                //transform.Translate (-Vector3.up * sinkSpeed * Time.deltaTime);
             }
         }
 
@@ -85,7 +87,11 @@ namespace CompleteProject
             // Change the audio clip of the audio source to the death clip and play it (this will stop the hurt clip playing).
             enemyAudio.clip = deathClip;
             enemyAudio.Play ();
-        }
+
+			// Increase the score by the enemy's score value.
+			Score.score += scoreValue;
+			print("haha yes: "+Score.score);
+		}
 
 
         public void StartSinking ()
@@ -99,11 +105,8 @@ namespace CompleteProject
             // The enemy should no sink.
             isSinking = true;
 
-            // Increase the score by the enemy's score value.
-            ScoreManager.score += scoreValue;
-
-            // After 2 seconds destory the enemy.
-            Destroy (gameObject, 2f);
+			// After 2 seconds destory the enemy.
+			Destroy (gameObject, 2f);
         }
     }
 }

@@ -14,13 +14,17 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         FloorMask = LayerMask.GetMask("Floor");
-        anim = transform.GetComponent<Animator>();
-    }
+		anim = transform.GetComponent<Animator>();
+		rb = transform.GetComponent<Rigidbody>();
+	}
 
     void FixedUpdate()
     {
         float H = Input.GetAxisRaw("Horizontal");
         float V = Input.GetAxisRaw("Vertical");
+		Move(H, V);
+		Turn();
+		Animating(H, V);
     }
 
     void Move(float h, float v)
@@ -43,4 +47,9 @@ public class PlayerMovement : MonoBehaviour
             rb.MoveRotation(Quaternion.LookRotation(P2M));
         }
     }
+
+	void Animating(float H, float V)
+	{
+		anim.SetBool("IsWalking", ((H != 0) || (V != 0)));
+	}
 }
