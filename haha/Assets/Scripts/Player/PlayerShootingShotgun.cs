@@ -4,8 +4,12 @@ public class PlayerShootingShotgun : MonoBehaviour
 {
     public int damagePerShot = 20;
     public float timeBetweenBullets = 0.15f;
-    public float range = 100f;
-    public float inaccurracy = 0.6f;
+    public float OptimalRange = 50f;
+	public float MaxRange = 100f;
+	public float inaccurracy = 0.6f;
+	public int pellets = 6;
+
+	float dropOff;
 
     float timer;
     Ray shootRay = new Ray();
@@ -20,9 +24,21 @@ public class PlayerShootingShotgun : MonoBehaviour
 
     void Awake ()
     {
+		dropOff = damagePerShot / (MaxRange - OptimalRange);
+
+		GameObject[] Holders = new GameObject[pellets];
+		gunLines = new LineRenderer[pellets];
+		for (int i = 0; i < pellets; i++)
+		{
+			Holders[i] = new GameObject();
+			Holders[i].transform.position = transform.position;
+			Holders[i].transform.parent = transform;
+			Holders[i].AddComponent<LineRenderer>();
+			gunLines[i] = Holders[i].GetComponent<LineRenderer>();
+		}
+
         shootableMask = LayerMask.GetMask ("Shootable");
         gunParticles = GetComponent<ParticleSystem> ();
-        gunLines = GetComponents <LineRenderer> ();
         gunAudio = GetComponent<AudioSource> ();
         gunLight = GetComponent<Light> ();
     }
@@ -76,19 +92,21 @@ public class PlayerShootingShotgun : MonoBehaviour
 
             shootRay.origin = transform.position;
             shootRay.direction = transform.forward+new Vector3(Random.Range(-inaccurracy,inaccurracy), Random.Range(-inaccurracy, inaccurracy), 0);
+			Debug.DrawRay(shootRay.origin, shootRay.direction,Color.red,3,false);
 
-            if (Physics.Raycast(shootRay, out shootHit, range, shootableMask))
+			if (Physics.Raycast(shootRay, out shootHit, MaxRange, shootableMask))
             {
                 EnemyHealth enemyHealth = shootHit.collider.GetComponent<EnemyHealth>();
                 if (enemyHealth != null)
                 {
-                    enemyHealth.TakeDamage(damagePerShot, shootHit.point);
+                    enemyHealth.TakeDamage((int)(damagePerShot-(dropOff*Mathf.Max(Vector3.Distance(transform.position,shootHit.point)-OptimalRange,0))), shootHit.point);
+					print("Enemy hit for " + (int)(damagePerShot - (dropOff * Mathf.Max(Vector3.Distance(transform.position, shootHit.point) - OptimalRange, 0))) + " at "+ Vector3.Distance(transform.position, shootHit.point));
                 }
                 i.SetPosition(1, shootHit.point);
             }
             else
             {
-                i.SetPosition(1, shootRay.origin + shootRay.direction * range);
+                i.SetPosition(1, shootRay.origin + shootRay.direction * MaxRange);
             }
         }
     }
