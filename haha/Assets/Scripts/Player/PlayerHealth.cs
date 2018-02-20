@@ -14,21 +14,21 @@ public class PlayerHealth : MonoBehaviour
     public float flashSpeed = 5f;
     public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
 
-
     Animator anim;
     AudioSource playerAudio;
     PlayerMovement playerMovement;
-    PlayerShooting playerShooting;
-    bool isDead;
-    bool damaged;
+
+	public static bool isAlive = true; //changed to static because it's now used to control if the player can shoot
+
+	bool damaged;
 
 
     void Awake ()
     {
-        anim = GetComponent <Animator> ();
+		isAlive = true;
+		anim = GetComponent <Animator> ();
         playerAudio = GetComponent <AudioSource> ();
         playerMovement = GetComponent <PlayerMovement> ();
-        playerShooting = GetComponentInChildren <PlayerShooting> ();
         currentHealth = startingHealth;
     }
 
@@ -57,7 +57,7 @@ public class PlayerHealth : MonoBehaviour
 
         playerAudio.Play ();
 
-        if(currentHealth <= 0 && !isDead)
+        if(currentHealth <= 0 && isAlive)
         {
             Death ();
         }
@@ -66,9 +66,7 @@ public class PlayerHealth : MonoBehaviour
 
     void Death ()
     {
-        isDead = true;
-
-        playerShooting.DisableEffects ();
+        isAlive = false;
 
         anim.SetTrigger ("Die");
 
@@ -76,10 +74,8 @@ public class PlayerHealth : MonoBehaviour
         playerAudio.Play ();
 
         playerMovement.enabled = false;
-        playerShooting.enabled = false;
     }
-
-
+	
     public void RestartLevel ()
     {
         SceneManager.LoadScene (0);

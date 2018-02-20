@@ -19,7 +19,6 @@ public class ScoreManager : MonoBehaviour
 
     void Update ()
     {
-		print("Ayy lmao");
         text.text = "Score: " + score;
     }
 }

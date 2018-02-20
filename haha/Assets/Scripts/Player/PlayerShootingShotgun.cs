@@ -19,7 +19,7 @@ public class PlayerShootingShotgun : MonoBehaviour
     LineRenderer[] gunLines;
     AudioSource gunAudio;
     Light gunLight;
-    float effectsDisplayTime = 0.2f;
+    float effectsDisplayTime = 0.05f;
 
 
     void Awake ()
@@ -35,7 +35,10 @@ public class PlayerShootingShotgun : MonoBehaviour
 			Holders[i].transform.parent = transform;
 			Holders[i].AddComponent<LineRenderer>();
 			gunLines[i] = Holders[i].GetComponent<LineRenderer>();
-		}
+			gunLines[i].widthMultiplier = 0.05f;
+			gunLines[i].colorGradient = transform.GetComponent<LineRenderer>().colorGradient;
+            gunLines[i].material = transform.GetComponent<LineRenderer>().material;
+        }
 
         shootableMask = LayerMask.GetMask ("Shootable");
         gunParticles = GetComponent<ParticleSystem> ();
@@ -48,12 +51,12 @@ public class PlayerShootingShotgun : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-		if(Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0)
+		if(Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0 && PlayerHealth.isAlive)
         {
             Shoot ();
         }
 
-        if(timer >= timeBetweenBullets * effectsDisplayTime)
+        if(timer >= Mathf.Min(1,timeBetweenBullets) * effectsDisplayTime)
         {
             DisableEffects ();
         }
@@ -83,7 +86,7 @@ public class PlayerShootingShotgun : MonoBehaviour
 
         foreach (LineRenderer i in gunLines)
         {
-            i.enabled = false;
+            i.enabled = true;
             i.SetPosition(0, transform.position);
         }
 
@@ -91,7 +94,7 @@ public class PlayerShootingShotgun : MonoBehaviour
         {
 
             shootRay.origin = transform.position;
-            shootRay.direction = transform.forward+new Vector3(Random.Range(-inaccurracy,inaccurracy), Random.Range(-inaccurracy, inaccurracy), 0);
+            shootRay.direction = transform.forward+new Vector3(Random.Range(-inaccurracy,inaccurracy), Random.Range(0, inaccurracy*0.5f), 0);
 			Debug.DrawRay(shootRay.origin, shootRay.direction,Color.red,3,false);
 
 			if (Physics.Raycast(shootRay, out shootHit, MaxRange, shootableMask))
