@@ -6,17 +6,12 @@ public class Projectile : MonoBehaviour {
 
 	public float Speed = 6;
 	public float Damage = 30;
-
-	Rigidbody rb;
+    
 	List<Collider> ignore = new List<Collider>();
-
-	void Start()
-	{
-		rb = transform.GetComponent<Rigidbody>();
-	}
 	
 	void FixedUpdate () {
-		transform.Translate(transform.forward * Time.deltaTime);
+        transform.Translate((transform.position+transform.forward) * Time.deltaTime);
+        Debug.DrawRay(transform.position, transform.forward);
 	}
 
 	void OnTriggerEnter(Collider other)

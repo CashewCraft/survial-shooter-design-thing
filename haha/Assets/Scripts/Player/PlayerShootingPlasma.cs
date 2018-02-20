@@ -55,9 +55,14 @@ public class PlayerShootingPlasma: MonoBehaviour
 
         gunLight.enabled = true;
 
-        gunParticles.Stop ();
-        gunParticles.Play ();
+        gunParticles.Stop();
+        gunParticles.Play();
 
-		Instantiate(projectile, transform.position, Quaternion.FromToRotation(transform.position,transform.forward), null).GetComponent<Projectile>().Damage = damagePerShot;
+        print(transform.forward);
+        Debug.DrawLine(transform.position,transform.position + transform.forward,Color.red,20);
+
+        GameObject bullet = Instantiate(projectile, transform.position, Quaternion.FromToRotation(transform.position, transform.position + transform.forward), null);
+        bullet.GetComponent<Projectile>().Damage = damagePerShot;
+        bullet.transform.rotation = Quaternion.FromToRotation(transform.position, transform.position + transform.forward);
     }
 }

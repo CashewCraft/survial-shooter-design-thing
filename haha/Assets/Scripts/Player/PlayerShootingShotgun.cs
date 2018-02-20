@@ -95,7 +95,6 @@ public class PlayerShootingShotgun : MonoBehaviour
 
             shootRay.origin = transform.position;
             shootRay.direction = transform.forward+new Vector3(Random.Range(-inaccurracy,inaccurracy), Random.Range(0, inaccurracy*0.5f), 0);
-			Debug.DrawRay(shootRay.origin, shootRay.direction,Color.red,3,false);
 
 			if (Physics.Raycast(shootRay, out shootHit, MaxRange, shootableMask))
             {
@@ -103,7 +102,6 @@ public class PlayerShootingShotgun : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     enemyHealth.TakeDamage((int)(damagePerShot-(dropOff*Mathf.Max(Vector3.Distance(transform.position,shootHit.point)-OptimalRange,0))), shootHit.point);
-					print("Enemy hit for " + (int)(damagePerShot - (dropOff * Mathf.Max(Vector3.Distance(transform.position, shootHit.point) - OptimalRange, 0))) + " at "+ Vector3.Distance(transform.position, shootHit.point));
                 }
                 i.SetPosition(1, shootHit.point);
             }
