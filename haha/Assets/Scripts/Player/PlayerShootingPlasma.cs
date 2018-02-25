@@ -4,8 +4,7 @@ public class PlayerShootingPlasma: MonoBehaviour
 {
     public int damagePerShot = 20;
     public float timeBetweenBullets = 0.15f;
-    public float range = 100f;
-
+    public float Range = 100f;
 
     float timer;
     RaycastHit shootHit;
@@ -58,11 +57,10 @@ public class PlayerShootingPlasma: MonoBehaviour
         gunParticles.Stop();
         gunParticles.Play();
 
-        print(transform.forward);
-        Debug.DrawLine(transform.position,transform.position + transform.forward,Color.red,20);
-
         GameObject bullet = Instantiate(projectile, transform.position, Quaternion.FromToRotation(transform.position, transform.position + transform.forward), null);
         bullet.GetComponent<Projectile>().Damage = damagePerShot;
-        bullet.transform.rotation = Quaternion.FromToRotation(transform.position, transform.position + transform.forward);
-    }
+		bullet.GetComponent<Projectile>().Range = Range;
+		bullet.GetComponent<Projectile>().Player = transform;
+        bullet.transform.rotation = transform.rotation;
+	}
 }
